@@ -1,3 +1,6 @@
+using MapOfCafesNearUniversity.ServiceContracts;
+using MapOfCafesNearUniversity.Services;
+
 namespace MapOfCafesNearUniversity
 {
     public class Program
@@ -7,6 +10,9 @@ namespace MapOfCafesNearUniversity
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllersWithViews();
+            builder.Services.AddHttpClient();
+            builder.Services.AddScoped<ILeafletService, LeafletService>();
+
             var app = builder.Build();
 
             if (!app.Environment.IsDevelopment())
