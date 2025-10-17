@@ -1,5 +1,6 @@
 using MapOfCafesNearUniversity.ServiceContracts;
 using MapOfCafesNearUniversity.Services;
+using MapOfCafesNearUniversity.Settings;
 
 namespace MapOfCafesNearUniversity
 {
@@ -9,16 +10,17 @@ namespace MapOfCafesNearUniversity
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddControllersWithViews();
-            builder.Services.AddHttpClient();
+            builder.Services.AddMemoryCache();
+            builder.Services.Configure<OverpassApiSettings>(builder.Configuration.GetSection("OverpassApi"));
+            builder.Services.AddHttpClient<OverpassApiClient>();
             builder.Services.AddScoped<ILeafletService, LeafletService>();
+            builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
 
-            if (!app.Environment.IsDevelopment())
+            if (builder.Environment.IsDevelopment())
             {
-                app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
+                app.UseDeveloperExceptionPage();
             }
 
             app.UseHttpsRedirection();

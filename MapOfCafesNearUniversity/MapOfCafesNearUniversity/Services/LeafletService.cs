@@ -1,49 +1,76 @@
 ﻿using MapOfCafesNearUniversity.DTO;
 using MapOfCafesNearUniversity.Models;
 using MapOfCafesNearUniversity.ServiceContracts;
+using MapOfCafesNearUniversity.Settings;
+using Microsoft.Extensions.Caching.Memory;
+using System.Text;
 using System.Text.Json;
 
 namespace MapOfCafesNearUniversity.Services
 {
     public class LeafletService : ILeafletService
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly OverpassApiClient _apiClient;
+        private readonly IMemoryCache _cache;
+        private readonly ILogger<LeafletService> _logger;
+        private const string CafesCacheKey = "ListOfCafes";
 
-        public LeafletService(IHttpClientFactory httpClientFactory)
+        public LeafletService(OverpassApiClient apiClient, IMemoryCache cache, ILogger<LeafletService> logger)
         {
-            _httpClientFactory = httpClientFactory;
+            _apiClient = apiClient;
+            _cache = cache;
+            _logger = logger;
         }
 
         public async Task<List<Cafe>> GetCafes()
         {
-            var httpClient = _httpClientFactory.CreateClient();
-            var boundingBox = "50.36,30.39,50.53,30.65";
-            var overpassQuery = $"[out:json];node[\"amenity\"=\"cafe\"]({boundingBox});out;";
-            var response = await httpClient.GetAsync($"https://overpass-api.de/api/interpreter?data={Uri.EscapeDataString(overpassQuery)}");
-
-            if (response.IsSuccessStatusCode)
+            if (_cache.TryGetValue(CafesCacheKey, out List<Cafe> cafes))
             {
-                var jsonString = await response.Content.ReadAsStringAsync();
-                var overpassResponse = JsonSerializer.Deserialize<OverpassResponse>(jsonString);
-
-                if (overpassResponse?.Elements != null)
-                {
-
-                    return overpassResponse.Elements
-                        .Where(el => !string.IsNullOrEmpty(el.Tags?.Name))
-                        .Select(el => new Cafe
-                        {
-                            Name = el.Tags.Name,
-                            Latitude = el.Latitude,
-                            Longitude = el.Longitude,
-                            Address = $"{el.Tags.Street}, {el.Tags.HouseNumber}".Trim(new char[] { ' ', ',' }),
-                            OpeningHours = el.Tags.OpeningHours,
-                            Website = el.Tags.Website,
-                            Phone = el.Tags.Phone
-                        }).ToList();
-                }
+                _logger.LogInformation("Дані про кафе отримано з кешу.");
+                return cafes;
             }
-            return new List<Cafe>();
+
+            _logger.LogInformation("Кеш порожній. Запитуємо дані з Overpass API.");
+            var overpassResponse = await _apiClient.GetCafesFromApiAsync();
+
+            if (overpassResponse?.Elements == null)
+            {
+                return new List<Cafe>();
+            }
+
+            cafes = MapToCafeModel(overpassResponse.Elements);
+
+            var cacheEntryOptions = new MemoryCacheEntryOptions()
+                .SetSlidingExpiration(TimeSpan.FromMinutes(30))
+                .SetAbsoluteExpiration(TimeSpan.FromHours(2));
+
+            _cache.Set(CafesCacheKey, cafes, cacheEntryOptions);
+
+            return cafes;
+        }
+
+        private List<Cafe> MapToCafeModel(List<Element> elements)
+        {
+            return elements
+                .Where(el => !string.IsNullOrEmpty(el.Tags?.Name))
+                .Select(el =>
+                {
+                    var popupBuilder = new StringBuilder();
+                    popupBuilder.Append($"<b>{el.Tags.Name}</b>");
+                    string address = $"{el.Tags.Street}, {el.Tags.HouseNumber}".Trim(new char[] { ' ', ',' });
+                    if (!string.IsNullOrWhiteSpace(address)) popupBuilder.Append($"<br>📍 {address}");
+                    if (!string.IsNullOrWhiteSpace(el.Tags.OpeningHours)) popupBuilder.Append($"<br>🕒 {el.Tags.OpeningHours}");
+                    if (!string.IsNullOrWhiteSpace(el.Tags.Phone)) popupBuilder.Append($"<br>📞 {el.Tags.Phone}");
+                    if (!string.IsNullOrWhiteSpace(el.Tags.Website)) popupBuilder.Append($"<br>🌐 <a href=\"{el.Tags.Website}\" target=\"_blank\">Веб-сайт</a>");
+
+                    return new Cafe
+                    {
+                        Name = el.Tags.Name,
+                        Latitude = el.Latitude,
+                        Longitude = el.Longitude,
+                        PopupContent = popupBuilder.ToString()
+                    };
+                }).ToList();
         }
     }
 }

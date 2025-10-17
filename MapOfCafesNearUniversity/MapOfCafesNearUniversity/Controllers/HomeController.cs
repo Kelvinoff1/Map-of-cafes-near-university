@@ -12,6 +12,7 @@ namespace MapOfCafesNearUniversity.Controllers
             _leafletService = leafletService;
         }
 
+        [Route("/")]
         public async Task<IActionResult> Index()
         {
             var cafes = await _leafletService.GetCafes();
