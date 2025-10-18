@@ -34,15 +34,18 @@ jobs:
             nuget-${{ runner.os }}-
 
       - name: Dotnet restore
+        working-directory: MapOfCafesNearUniversity
         run: dotnet restore
 
       - name: Build
+        working-directory: MapOfCafesNearUniversity
         run: dotnet build --no-restore --configuration Release
 
       - name: Run tests (produce TRX)
+        working-directory: MapOfCafesNearUniversity
         run: |
-          mkdir -p TestResults
-          dotnet test --no-build --configuration Release --logger "trx;LogFileName=TestResults/results.trx" || true
+          mkdir -p ../TestResults
+          dotnet test --no-build --configuration Release --logger "trx;LogFileName=../TestResults/results.trx" || true
 
       - name: Upload test report
         uses: actions/upload-artifact@v4
@@ -73,10 +76,12 @@ jobs:
             nuget-${{ runner.os }}-
 
       - name: Dotnet restore
+        working-directory: MapOfCafesNearUniversity
         run: dotnet restore
 
       - name: Dotnet publish (release)
-        run: dotnet publish -c Release -o ./publish
+        working-directory: MapOfCafesNearUniversity
+        run: dotnet publish -c Release -o ../publish
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
