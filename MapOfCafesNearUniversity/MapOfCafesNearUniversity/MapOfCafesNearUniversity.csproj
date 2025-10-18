@@ -8,8 +8,20 @@
 
   <ItemGroup>
     <Folder Include="DTO\" />
+<Folder Include="Models\" />
+    <Folder Include="Services\" />
+    <Folder Include="ServiceContracts\" />
     <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\js\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\..\..\..\Downloads\map.js">
+      <Link>wwwroot\js\map.js</Link>
+    </Content>
+    <Content Include="..\..\..\..\..\Downloads\StyleSheet.css">
+      <Link>wwwroot\css\StyleSheet.css</Link>
+    </Content>
   </ItemGroup>
 
 </Project>
