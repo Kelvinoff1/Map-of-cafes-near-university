@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{02EA681E-C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api", "api", "{3565FCF8-B2CA-43EE-B711-1FDF6143A035}"
 	ProjectSection(SolutionItems) = preProject
-		swagger.yaml = swagger.yaml
+		docs\api\swagger.yaml = docs\api\swagger.yaml
 	EndProjectSection
 EndProject
 Global
