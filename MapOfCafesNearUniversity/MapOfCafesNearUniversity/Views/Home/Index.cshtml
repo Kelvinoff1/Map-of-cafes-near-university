@@ -1,15 +1,66 @@
 ﻿@{
-    ViewData["Title"] = "Карта Кав'ярень";
+    ViewData["Title"] = "Мапа Кав'ярень";
 }
 
-<div id="map"></div>
+<div class="page-container">
 
-@section Scripts {
-    <script type="application/json" id="cafes-data">
-        @Html.Raw(ViewData["CafesJson"])
-    </script>
+    <aside class="sidebar">
 
-    <script>
+        <header class="sidebar-header">
+            <div class="logo-placeholder">Тут буде логотип сайту</div>
+            <div class="header-nav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </header>
+
+        <div class="filter-bar">
+            <input type="text" placeholder="Пошук..." class="search-input">
+            <button class="filter-btn">Фільтри</button>
+        </div>
+
+        <div class="results-header">
+            <span id="results-count">Пошук кав'ярень...</span>
+            <select class="sort-select">
+                <option value="default">Сортування</option>
+                <option value="rating_desc">За рейтингом (високий)</option>
+                <option value="rating_asc">За рейтингом (низький)</option>
+            </select>
+        </div>
+
+        <div class="results-list">
+            <div class="cafe-card-placeholder">
+                <div class="card-image-placeholder"></div>
+                <div class="card-content">
+                    <div class="placeholder-line-short"></div>
+                    <div class="placeholder-line-long"></div>
+                    <div class="placeholder-line-long"></div>
+                </div>
+            </div>
+
+        </div>
+
+    </aside>
+
+    <main class="map-container">
+        <div id="map"></div>
+    </main>
+
+</div>
+
+
+<script id="cafes-data" type="application/json">
+    @Html.Raw(ViewData["CafesJson"])
+</script>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script src="~/js/map.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
         initializeMap();
-    </script>
-}
+    });
+</script>
