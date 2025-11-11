@@ -57,18 +57,29 @@ namespace MapOfCafesNearUniversity.Services
                 {
                     var popupBuilder = new StringBuilder();
                     popupBuilder.Append($"<b>{el.Tags.Name}</b>");
+
                     string address = $"{el.Tags.Street}, {el.Tags.HouseNumber}".Trim(new char[] { ' ', ',' });
                     if (!string.IsNullOrWhiteSpace(address)) popupBuilder.Append($"<br>📍 {address}");
-                    if (!string.IsNullOrWhiteSpace(el.Tags.OpeningHours)) popupBuilder.Append($"<br>🕒 {el.Tags.OpeningHours}");
-                    if (!string.IsNullOrWhiteSpace(el.Tags.Phone)) popupBuilder.Append($"<br>📞 {el.Tags.Phone}");
-                    if (!string.IsNullOrWhiteSpace(el.Tags.Website)) popupBuilder.Append($"<br>🌐 <a href=\"{el.Tags.Website}\" target=\"_blank\">Веб-сайт</a>");
+
+                    string openingHours = el.Tags.OpeningHours;
+                    if (!string.IsNullOrWhiteSpace(openingHours)) popupBuilder.Append($"<br>🕒 {openingHours}");
+
+                    string phone = el.Tags.Phone;
+                    if (!string.IsNullOrWhiteSpace(phone)) popupBuilder.Append($"<br>📞 {phone}");
+
+                    string website = el.Tags.Website;
+                    if (!string.IsNullOrWhiteSpace(website)) popupBuilder.Append($"<br>🌐 <a href=\"{website}\" target=\"_blank\">Веб-сайт</a>");
 
                     return new Cafe
                     {
                         Name = el.Tags.Name,
                         Latitude = el.Latitude,
                         Longitude = el.Longitude,
-                        PopupContent = popupBuilder.ToString()
+                        PopupContent = popupBuilder.ToString(),
+                        Address = string.IsNullOrWhiteSpace(address) ? "Адреса невідома" : address,
+                        OpeningHours = string.IsNullOrWhiteSpace(openingHours) ? "Години роботи невідомі" : openingHours,
+                        Website = website,
+                        Phone = phone
                     };
                 }).ToList();
         }
