@@ -1,4 +1,4 @@
-using MapOfCafesNearUniversity.DTO;
+﻿using MapOfCafesNearUniversity.DTO;
 using MapOfCafesNearUniversity.Models;
 using MapOfCafesNearUniversity.ServiceContracts;
 using MapOfCafesNearUniversity.Settings;
@@ -81,7 +81,9 @@ namespace MapOfCafesNearUniversity.Services
                         Website = website,
                         Phone = phone
                     };
-                }).ToList();
+                })
+                .OrderBy(x => x.Name)
+                .ToList();
         }
     }
 }

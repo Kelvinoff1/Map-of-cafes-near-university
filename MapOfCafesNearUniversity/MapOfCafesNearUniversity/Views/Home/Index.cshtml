@@ -7,38 +7,20 @@
     <aside class="sidebar">
 
         <header class="sidebar-header">
-            <div class="logo-placeholder">Тут буде логотип сайту</div>
-            <div class="header-nav">
-                <span></span>
-                <span></span>
-                <span></span>
+            <div class="logo-placeholder">
+                <img src="Logo.png" alt="Логотип сайту" class="site-logo" />
             </div>
         </header>
 
         <div class="filter-bar">
-            <input type="text" placeholder="Пошук..." class="search-input">
-            <button class="filter-btn">Фільтри</button>
+            <input type="text" id="search-input" placeholder="Пошук..." class="search-input">
         </div>
 
         <div class="results-header">
-            <span id="results-count">Пошук кав'ярень...</span>
-            <select class="sort-select">
-                <option value="default">Сортування</option>
-                <option value="rating_desc">За рейтингом (високий)</option>
-                <option value="rating_asc">За рейтингом (низький)</option>
-            </select>
+            <span id="results-count">Завантаження кав'ярень...</span>
         </div>
 
         <div class="results-list">
-            <div class="cafe-card-placeholder">
-                <div class="card-image-placeholder"></div>
-                <div class="card-content">
-                    <div class="placeholder-line-short"></div>
-                    <div class="placeholder-line-long"></div>
-                    <div class="placeholder-line-long"></div>
-                </div>
-            </div>
-
         </div>
 
     </aside>
@@ -49,18 +31,20 @@
 
 </div>
 
-
 <script id="cafes-data" type="application/json">
     @Html.Raw(ViewData["CafesJson"])
 </script>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script src="~/js/map.js"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        initializeMap();
+        if (typeof initializeMap === 'function') {
+            initializeMap();
+        }
     });
 </script>
