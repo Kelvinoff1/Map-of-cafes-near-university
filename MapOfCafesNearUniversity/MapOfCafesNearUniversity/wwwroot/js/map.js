@@ -1,4 +1,4 @@
-﻿let map;
+let map;
 
 function initializeMap() {
     if (map) {
