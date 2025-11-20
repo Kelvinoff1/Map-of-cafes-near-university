@@ -1,17 +1,204 @@
-﻿html, body {
+/* ==== Базові стилі та скидання ==== */
+html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    /* Використовуємо системні шрифти, як на сучасних сайтах */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f4f4f4; /* Світлий фон, як у LUN */
+    overflow: hidden; /* Забороняємо прокрутку всієї сторінки */
+}
+
+/* ==== 1. Головний Лейаут (Flexbox) ==== */
+.page-container {
+    display: flex;
+    height: 100vh; /* 100% висоти екрану */
+    width: 100%;
+}
+
+/* ==== 2. Сайдбар (Ліва колонка) ==== */
+.sidebar {
+    width: 390px; /* Фіксована ширина, як у LUN */
+    flex-shrink: 0; /* Не даємо сайдбару стискатися */
+    background-color: #ffffff;
+    border-right: 1px solid #e0e0e0;
+
+    /* Дуже важливо: робимо сайдбар flex-контейнером */
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Повна висота */
+}
+
+/* ==== 3. Елементи сайдбару ==== */
+
+.sidebar-header, .filter-bar, .results-header {
+    /* Ці елементи НЕ будуть прокручуватись */
+    flex-shrink: 0;
+    padding: 16px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.sidebar-header {
+    /* (Тут стилі для вашого лого та ін.) */
+    font-weight: 600;
+}
+
+.filter-bar {
+    display: flex;
+    gap: 10px;
+}
+
+.search-input {
+    flex-grow: 1; /* Поле пошуку займає весь доступний простір */
+    padding: 10px 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+.filter-btn {
+    padding: 0 20px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: #555;
+}
+
+.sort-select {
+    /* 1. Скидаємо стандартний вигляд браузера */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    /* 2. Надаємо "кнопко-подібний" вигляд */
+    background-color: #f5f5f5; /* Світлий фон */
+    border: 1px solid #ccc;     /* Рамка */
+    border-radius: 8px;        /* Закруглені кути */
+    padding: 8px 30px 8px 12px; /* Паддінг (30px справа для стрілки) */
+
+    /* 3. Шрифти і курсор */
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+
+    /* 4. Додаємо власну стрілку (вбудований SVG) */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23555" viewBox="0 0 16 16"%3E%3Cpath fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/%3E%3C/svg%3E');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+}
+
+/* 5. Додамо ефект при наведенні миші */
+.sort-select:hover {
+    border-color: #999;
+    background-color: #e9e9e9;
+}
+
+/* ==== КЛЮЧОВИЙ МОМЕНТ ====
+  Список результатів займає весь вільний простір
+  і отримує власну прокрутку.
+*/
+.results-list {
+    flex-grow: 1; /* Займає весь залишений вертикальний простір */
+    overflow-y: auto; /* Додає вертикальну прокрутку ТІЛЬКИ сюди */
+    padding: 16px;
+}
+
+
+/* ==== 4. Карта (Права колонка) ==== */
+.map-container {
+    flex-grow: 1; /* Карта займає весь залишений простір */
+    height: 100vh;
 }
 
 #map {
     width: 100%;
-    height: 100vh; 
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    height: 100%; /* Карта займає 100% висоти свого батька (map-container) */
+    border: none; /* Прибираємо стару рамку */
+    border-radius: 0;
 }
 
-.container {
-    padding: 0;
-    max-width: 100%;
+
+/* ==== 5. Стилі для карток кафе (з макету) ==== */
+.cafe-card {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden; /* Щоб зображення не вилазило */
+    cursor: pointer;
+    transition: box-shadow 0.2s ease;
+}
+
+.cafe-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.card-image-placeholder {
+    width: 100%;
+    height: 180px;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #aaa;
+    font-size: 48px;
+}
+/* Можна додати іконку, як у макеті */
+.card-image-placeholder::before {
+    content: '🌄'; /* Або '📷' */
+}
+
+.card-content {
+    padding: 16px;
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.card-rating, .card-address {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.card-menu-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.card-google-link {
+    display: block;
+    text-align: center;
+    font-size: 14px;
+    color: #007bff;
+    text-decoration: none;
+    margin-top: 8px;
+}
+
+/* Стилі для заглушки (placeholder) */
+.card-content .placeholder-line-short {
+    height: 20px; width: 60%; background-color: #eee; border-radius: 4px; margin-bottom: 10px;
+}
+.card-content .placeholder-line-long {
+    height: 16px; width: 90%; background-color: #f5f5f5; border-radius: 4px; margin-bottom: 8px;
 }

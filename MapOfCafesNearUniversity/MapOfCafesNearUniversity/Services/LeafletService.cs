@@ -1,4 +1,4 @@
-﻿using MapOfCafesNearUniversity.DTO;
+using MapOfCafesNearUniversity.DTO;
 using MapOfCafesNearUniversity.Models;
 using MapOfCafesNearUniversity.ServiceContracts;
 using MapOfCafesNearUniversity.Settings;
