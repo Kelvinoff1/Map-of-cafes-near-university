@@ -6,8 +6,8 @@ function initializeMap() {
     }
     const cafesDataElement = document.getElementById('cafes-data');
     const cafesJson = cafesDataElement.textContent;
-    const initialCoordinates = [50.4501, 30.5234]; // Київ
-    const initialZoom = 13;
+    const initialCoordinates = [50.4291, 30.4815]; // Координати ДУІКТ
+    const initialZoom = 15;
 
     // Ініціалізуємо карту
     map = L.map('map').setView(initialCoordinates, initialZoom);
