@@ -1,0 +1,61 @@
+openapi: 3.0.0
+info:
+  title: Map of Cafes Near University API
+  version: 1.0.0
+  description: API для отримання інформації про кафе поруч з університетом
+
+servers:
+  - url: http://localhost:5000
+    description: Локальний сервер для тестування
+
+paths:
+  /cafes:
+    get:
+      summary: Отримати список усіх кафе
+      responses:
+        '200':
+          description: Список кафе успішно отримано
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: Aroma Kava
+                    latitude:
+                      type: number
+                      example: 50.4501
+                    longitude:
+                      type: number
+                      example: 30.5234
+                    popupContent:
+                      type: string
+                      example: Кав'ярня біля корпусу №3
+
+    post:
+      summary: Додати нове кафе
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Freshline
+                latitude:
+                  type: number
+                  example: 50.4498
+                longitude:
+                  type: number
+                  example: 30.5239
+                popupContent:
+                  type: string
+                  example: Нове кафе біля університету
+      responses:
+        '201':
+          description: Кафе додано успішно
